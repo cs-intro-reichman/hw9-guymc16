@@ -54,8 +54,12 @@ public class LinkedList {
 			throw new IllegalArgumentException(
 					"index must be between 0 and size");
 		}
-		//// Replace the following statement with your code
-		return null;
+		Node currNode = first;
+		for (int i = 0 ; i <index ; i ++) {
+			currNode = currNode.next;
+		}
+		
+		return currNode;
 	}
 	
 	/**
@@ -78,7 +82,23 @@ public class LinkedList {
 	 *         if index is negative or greater than the list's size
 	 */
 	public void add(int index, MemoryBlock block) {
-		//// Write your code here
+		Node newNode = new Node(block);
+		if (index < 0 || index > size) throw new IllegalArgumentException();
+		if (index == 0){
+			newNode.next = first;
+			first = newNode;
+		} else if (index == size) {
+			last.next = newNode;
+			last = newNode;
+		} else {
+			Node before = this.getNode(index-1);
+			Node after = this.getNode(index);
+			before.next = newNode;
+			newNode.next = after;
+
+		}
+		size++;
+
 	}
 
 	/**
@@ -89,7 +109,17 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addLast(MemoryBlock block) {
-		//// Write your code here
+		Node newNode = new Node(block);
+		if (size == 0) {
+			first = newNode;
+			last = first;
+		} else {
+			last.next = newNode;
+			last = newNode;
+		}
+
+		size++;
+
 	}
 	
 	/**
@@ -100,7 +130,16 @@ public class LinkedList {
 	 *        the given memory block
 	 */
 	public void addFirst(MemoryBlock block) {
-		//// Write your code here
+		Node newNode = new Node(block);
+		if (size == 0) {
+			first = newNode;
+			last = first;
+		} else {
+			newNode.next = first;
+			first = newNode;
+		}
+
+		size++;
 	}
 
 	/**
@@ -113,8 +152,9 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
-		//// Replace the following statement with your code
-		return null;
+		MemoryBlock answer = this.getNode(index).block;
+		return answer;
+		// it may been that i need also throw expectetions
 	}	
 
 	/**
@@ -125,7 +165,15 @@ public class LinkedList {
 	 * @return the index of the block, or -1 if the block is not in this list
 	 */
 	public int indexOf(MemoryBlock block) {
-		//// Replace the following statement with your code
+
+		Node currNode = first;
+		int index = -1;
+		while (currNode != null) {
+			index ++;
+			if (currNode.block.equals(block)) return index;
+			if (currNode.next != null) currNode = currNode.next;
+		}
+		
 		return -1;
 	}
 
@@ -136,7 +184,17 @@ public class LinkedList {
 	 *        the node that will be removed from this list
 	 */
 	public void remove(Node node) {
-		//// Write your code here
+
+		Node prev = null;
+		Node current = first;
+		while (current != null && !current.block.equals(node.block)) {
+			prev = current;
+			current = current.next;
+		}
+			if (prev == null) first = first.next;
+			else if (current != null) prev.next = current.next;
+			
+		size--;
 	}
 
 	/**
@@ -147,7 +205,8 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public void remove(int index) {
-		//// Write your code here
+		if (index < 0 || index > size) throw new IllegalArgumentException();
+		remove(this.getNode(index)); 
 	}
 
 	/**
@@ -158,7 +217,9 @@ public class LinkedList {
 	 *         if the given memory block is not in this list
 	 */
 	public void remove(MemoryBlock block) {
-		//// Write your code here
+		int index = this.indexOf(block);
+		if (index < 0 || index > size) throw new IllegalArgumentException();
+		remove(this.getNode(index)); 
 	}	
 
 	/**
@@ -172,7 +233,10 @@ public class LinkedList {
 	 * A textual representation of this list, for debugging.
 	 */
 	public String toString() {
-		//// Replace the following statement with your code
-		return "";
+		if (size == 0) return "";
+		String str = "(";
+		Node currNode = first;
+		while (currNode != null) str +=  currNode + " ";
+		return str.substring(0, str.length() - 1) + ")";
 	}
 }
