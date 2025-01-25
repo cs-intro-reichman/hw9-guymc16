@@ -85,19 +85,18 @@ public class LinkedList {
 		Node newNode = new Node(block);
 		if (index < 0 || index > size) throw new IllegalArgumentException();
 		if (index == 0){
-			newNode.next = first;
-			first = newNode;
+			this.addFirst(block);
 		} else if (index == size) {
-			last.next = newNode;
-			last = newNode;
+			this.addLast(block);
 		} else {
 			Node before = this.getNode(index-1);
 			Node after = this.getNode(index);
 			before.next = newNode;
 			newNode.next = after;
+			size++;
 
 		}
-		size++;
+		
 
 	}
 
@@ -152,6 +151,7 @@ public class LinkedList {
 	 *         if index is negative or greater than or equal to size
 	 */
 	public MemoryBlock getBlock(int index) {
+		if (index < 0 || index > size || size == 0) throw new IllegalArgumentException("index must be between 0 and size");
 		MemoryBlock answer = this.getNode(index).block;
 		return answer;
 		// it may been that i need also throw expectetions
@@ -171,7 +171,7 @@ public class LinkedList {
 		while (currNode != null) {
 			index ++;
 			if (currNode.block.equals(block)) return index;
-			if (currNode.next != null) currNode = currNode.next;
+			currNode = currNode.next;
 		}
 		
 		return -1;
@@ -191,10 +191,26 @@ public class LinkedList {
 			prev = current;
 			current = current.next;
 		}
-			if (prev == null) first = first.next;
-			else if (current != null) prev.next = current.next;
+			if (current != null) {
+				if (prev == null){
+					if (current.next == null){
+						first = null;
+						last = null;
+					} else first = current.next;
+
+				}
+				else{ 
+					if(current.next == null) {
+					prev.next = null;
+					last = prev;
+				}
+				else {
+					prev.next = current.next;
+				}
+			}
+				size--;
+			} else throw new IllegalArgumentException(" NullPointerException!");
 			
-		size--;
 	}
 
 	/**
@@ -218,7 +234,7 @@ public class LinkedList {
 	 */
 	public void remove(MemoryBlock block) {
 		int index = this.indexOf(block);
-		if (index < 0 || index > size) throw new IllegalArgumentException();
+		if (index < 0 || index > size) throw new IllegalArgumentException("index must be between 0 and size");
 		remove(this.getNode(index)); 
 	}	
 
