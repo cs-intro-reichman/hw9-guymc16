@@ -57,7 +57,8 @@ public class MemorySpace {
 	 *        the length (in words) of the memory block that has to be allocated
 	 * @return the base address of the allocated block, or -1 if unable to allocate
 	 */
-	public int malloc(int length) {	
+	public int malloc(int length) {
+		if (freeList == null) return -1;
 		ListIterator itr = freeList.iterator();
 		MemoryBlock block = null;
 		while (itr.hasNext()) {
@@ -118,6 +119,7 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 
+		if (allocatedList != null) {
 		ListIterator itr = allocatedList.iterator();
 		while (itr.hasNext()) {
 			MemoryBlock block = itr.next();
@@ -126,9 +128,8 @@ public class MemorySpace {
 				freeList.addLast(block);
 				break;
 			}
-
-
 		}
+	}
 		
 	}
 	
