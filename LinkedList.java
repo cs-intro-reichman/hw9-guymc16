@@ -251,18 +251,22 @@ public class LinkedList {
 		if (size == 0) return "";
 		String str = "(";
 		Node currNode = first;
-		while (currNode != null) str +=  currNode + " ";
-		return str.substring(0, str.length() - 1) + ")";
-	}
-	 */
-	public String toString() {
-		if (size == 0) return "";
-		String str = "(";
-		Node currNode = first;
 		while (currNode != null){
 			str +=  currNode + " ";
 			currNode = currNode.next;
 		}
 		return str.substring(0, str.length() - 1) + ")";
+	}
+	}
+	 */
+	public String toString() {
+		if (size == 0) return "";
+		String str = "";
+		Node currNode = first;
+		while (currNode != null){
+			str +=  currNode.toString().substring(1, currNode.toString().length()-1) + " ";
+			currNode = currNode.next;
+		}
+		return str.substring(0, str.length() - 1) + " ";
 	}
 }

@@ -60,9 +60,11 @@ public class MemorySpace {
 	public int malloc(int length) {
 		if (freeList == null) return -1;
 		ListIterator itr = freeList.iterator();
+		int sum=0;
 		MemoryBlock block = null;
 		while (itr.hasNext()) {
 			 block = itr.next();
+			 sum+= block.length;
 			 if (block.length >= length) break;
 		}
 			if (block == null) return -1;
@@ -71,7 +73,7 @@ public class MemorySpace {
 				freeList.remove(block);
 				return block.baseAddress;
 			} 
-
+			if (length > sum) return -1;
 			MemoryBlock newAllo = new MemoryBlock(block.baseAddress, length);
 			allocatedList.addLast(newAllo);
 			int index = freeList.indexOf(block);
@@ -116,9 +118,8 @@ public class MemorySpace {
 	 * 
 	 * @param baseAddress
 	 *            the starting address of the block to freeList
-	 */
-	public void free(int address) {
-
+	 * 
+	 * public void free(int address) {
 		if (allocatedList != null) {
 		ListIterator itr = allocatedList.iterator();
 		while (itr.hasNext()) {
@@ -129,7 +130,26 @@ public class MemorySpace {
 				break;
 			}
 		}
+		}
+	
+		
 	}
+	 */
+	public void free(int address) {
+		if (allocatedList.getSize() == 0) throw new IllegalArgumentException("index must be between 0 and size");
+		else {
+		ListIterator itr = allocatedList.iterator();
+		while (itr.hasNext()) {
+			MemoryBlock block = itr.next();
+			if (block.baseAddress == address) {
+				allocatedList.remove(block);
+				freeList.addLast(block);
+				break;
+			}
+		}
+	}
+		
+	
 		
 	}
 	
@@ -145,21 +165,45 @@ public class MemorySpace {
 	 * Performs defragmantation of this memory space.
 	 * Normally, called by malloc, when it fails to find a memory block of the requested size.
 	 * In this implementation Malloc does not call defrag.
-	 */
-	public void defrag() {
+	 * 
+	 * public void defrag() {
 		ListIterator itr = freeList.iterator();
 		int sum = 0;
 		while (itr.hasNext()) {
 			MemoryBlock block = itr.next();
 			sum += block.length;
 		}
-		if (freeList.getSize() > 0){
+		if (freeList.getSize() > 1){
 			freeList.getFirst().block.length = sum;
 			while (freeList.getFirst().next != null) {
 				freeList.remove(freeList.getFirst().next.block);
 			}
 			
 		}
+		
+		
+		
+	}
+	 */
+	public void defrag() {
+		ListIterator itr1 = freeList.iterator();
+		if (freeList.getSize()>1){
+		while (itr1.hasNext()) {
+			MemoryBlock block1 = itr1.next();
+			ListIterator itr2 = freeList.iterator();
+			while (itr2.hasNext()) {
+				MemoryBlock block2 = itr2.next();
+				if (block1.baseAddress + block1.length == block2.baseAddress) {
+					block1.length += block2.length;
+					freeList.remove(block2);
+					itr1 = freeList.iterator();
+				}
+
+			}
+		}
+	
+			
+	}
 		
 		
 		
